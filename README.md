@@ -1,266 +1,384 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js Êı¾İ¿â¹ÜÀíÓ¦ÓÃ
 
-## Getting Started
+ÕâÊÇÒ»¸ö»ùÓÚ Next.js 15 µÄÏÖ´ú»¯ Web Ó¦ÓÃ£¬Ìá¹©ÍêÕûµÄÊı¾İ¿â CRUD ²Ù×÷¹¦ÄÜ¡£
 
-First, run the development server:
+## ? ÏîÄ¿ÌØĞÔ
 
+- **ÏÖ´ú»¯¼Ü¹¹**: Ê¹ÓÃ Next.js 15 App Router ºÍ React 19
+- **Êı¾İ¿â¼¯³É**: ¼¯³É MySQL Êı¾İ¿â£¬Ö§³ÖÍêÕûµÄ CRUD ²Ù×÷
+- **ÏìÓ¦Ê½Éè¼Æ**: Ê¹ÓÃ Tailwind CSS ¹¹½¨ÃÀ¹ÛµÄÓÃ»§½çÃæ
+- **´íÎó´¦Àí**: ÍêÉÆµÄ´íÎó´¦ÀíºÍÓÃ»§ÓÑºÃµÄ´íÎóÌáÊ¾
+- **Á¬½Ó³Ø¹ÜÀí**: ÓÅ»¯µÄÊı¾İ¿âÁ¬½Ó³ØÅäÖÃ
+
+## ? ¹¦ÄÜÁĞ±í
+
+### 1. ÓÃ»§¹ÜÀí (CRUD)
+- **´´½¨ÓÃ»§**: POST `/api/database` - Ìí¼ÓĞÂÓÃ»§
+- **²éÑ¯ÓÃ»§**: GET `/api/database` - »ñÈ¡ËùÓĞÓÃ»§
+- **¸üĞÂÓÃ»§**: PUT `/api/database` - ĞŞ¸ÄÓÃ»§ĞÅÏ¢
+- **É¾³ıÓÃ»§**: DELETE `/api/database?id={id}` - É¾³ıÖ¸¶¨ÓÃ»§
+
+### 2. Êı¾İ¿âÁ¬½Ó²âÊÔ
+- **Á¬½Ó×´Ì¬**: GET `/api/database/test` - ²âÊÔÊı¾İ¿âÁ¬½Ó×´Ì¬
+
+### 3. Ç°¶Ë½çÃæ
+- **Êı¾İÕ¹Ê¾**: ±í¸ñĞÎÊ½Õ¹Ê¾ÓÃ»§Êı¾İ
+- **´íÎó´¦Àí**: ÓÑºÃµÄ´íÎóÌáÊ¾ºÍÖØÊÔ»úÖÆ
+- **¼ÓÔØ×´Ì¬**: ÓÅÑÅµÄ¼ÓÔØ¶¯»­
+
+## ?? ¼¼ÊõÕ»
+
+- **Ç°¶Ë¿ò¼Ü**: Next.js 15, React 19
+- **ÑùÊ½¿ò¼Ü**: Tailwind CSS 4
+- **Êı¾İ¿â**: MySQL 8.0+
+- **Êı¾İ¿âÇı¶¯**: mysql2
+- **HTTP ¿Í»§¶Ë**: Axios
+- **¿ª·¢¹¤¾ß**: ESLint, PostCSS
+
+## ? °²×°ºÍÔËĞĞ
+
+### Ç°ÖÃÒªÇó
+- Node.js 18+ 
+- MySQL 8.0+
+- npm »ò yarn
+
+### 1. ¿ËÂ¡ÏîÄ¿
+```bash
+git clone <your-repo-url>
+cd my-app
+```
+
+### 2. °²×°ÒÀÀµ
+```bash
+npm install
+# »ò
+yarn install
+```
+
+### 3. ÅäÖÃÊı¾İ¿â
+ÔÚÏîÄ¿¸ùÄ¿Â¼´´½¨ `.env.local` ÎÄ¼ş£º
+```env
+# Êı¾İ¿âÅäÖÃ
+DB_HOST=127.0.0.1
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=test_db
+DB_PORT=3306
+
+# Ó¦ÓÃÅäÖÃ
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+**¿ìËÙÅäÖÃ**:
+```bash
+# ¸´ÖÆÅäÖÃÊ¾ÀıÎÄ¼ş
+cp config-example.txt .env.local
+# ±à¼­ .env.local ÎÄ¼ş£¬ÌîÈëÊµ¼ÊµÄÊı¾İ¿âÃÜÂë
+```
+
+### 4. ´´½¨Êı¾İ¿â±í
+ÔÚ MySQL ÖĞÖ´ĞĞÒÔÏÂ SQL£º
+```sql
+CREATE DATABASE IF NOT EXISTS test_db;
+USE test_db;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  age INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ²åÈëÊ¾ÀıÊı¾İ
+INSERT INTO users (name, email, age) VALUES 
+  ('ÕÅÈı', 'zhangsan@example.com', 25),
+  ('ÀîËÄ', 'lisi@example.com', 30),
+  ('ÍõÎå', 'wangwu@example.com', 28);
+```
+
+**»òÕßÊ¹ÓÃÌá¹©µÄ½Å±¾**:
+```bash
+# ÔÚ MySQL ÖĞÖ´ĞĞ
+mysql -u root -p < database-init.sql
+```
+
+### 5. ²âÊÔÊı¾İ¿âÁ¬½Ó
+```bash
+# ²âÊÔÊı¾İ¿âÁ¬½Ó
+node test-db.js
+```
+
+### 6. Æô¶¯¿ª·¢·şÎñÆ÷
 ```bash
 npm run dev
-# or
+# »ò
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/nextjs/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## API: Database Operations
-
-### Database Configuration
-
-æ•°æ®åº“è¿æ¥é…ç½®ä½äº `src/app/api/database/database.js` æ–‡ä»¶ä¸­ï¼š
-
-```javascript
-const pool = mysql.createPool({
-  connectionLimit: 10,
-  host: "127.0.0.1",
-  user: "root", 
-  password: "Zyzyld99.",
-  database: "test_db",
-});
+**Windows ÓÃ»§¿ÉÒÔÊ¹ÓÃ**:
+```bash
+start-dev.bat
 ```
 
-### Database Functions
+·ÃÎÊ [http://localhost:3000](http://localhost:3000) ²é¿´Ó¦ÓÃ
 
-`database.js` æä¾›äº†ä»¥ä¸‹å¯å¤ç”¨çš„æ•°æ®åº“æ“ä½œå‡½æ•°ï¼š
+## ? API ½Ó¿ÚÎÄµµ
 
-#### 1. executeQuery(sql, params)
-- **ç”¨é€”**: æ‰§è¡ŒæŸ¥è¯¢è¯­å¥ï¼ˆSELECTï¼‰
-- **å‚æ•°**: 
-  - `sql`: SQLæŸ¥è¯¢è¯­å¥
-  - `params`: æŸ¥è¯¢å‚æ•°æ•°ç»„ï¼ˆå¯é€‰ï¼‰
-- **è¿”å›**: æŸ¥è¯¢ç»“æœæ•°ç»„
-- **ç¤ºä¾‹**: `const users = await executeQuery("SELECT * FROM users WHERE age > ?", [18]);`
+### ÓÃ»§¹ÜÀí½Ó¿Ú
 
-#### 2. executeUpdate(sql, params)
-- **ç”¨é€”**: æ‰§è¡Œæ›´æ–°æ“ä½œï¼ˆINSERT, UPDATE, DELETEï¼‰
-- **å‚æ•°**:
-  - `sql`: SQLè¯­å¥
-  - `params`: å‚æ•°æ•°ç»„
-- **è¿”å›**: æ“ä½œç»“æœå¯¹è±¡ï¼ˆåŒ…å«affectedRows, insertIdç­‰ï¼‰
-- **ç¤ºä¾‹**: `const result = await executeUpdate("INSERT INTO users (name, email) VALUES (?, ?)", ["John", "john@example.com"]);`
+#### »ñÈ¡ËùÓĞÓÃ»§
+```http
+GET /api/database
+```
 
-#### 3. getPoolStatus()
-- **ç”¨é€”**: è·å–è¿æ¥æ± çŠ¶æ€ä¿¡æ¯
-- **è¿”å›**: è¿æ¥æ± é…ç½®ä¿¡æ¯
-
-#### 4. closePool()
-- **ç”¨é€”**: å…³é—­æ•°æ®åº“è¿æ¥æ± 
-- **è¿”å›**: Promise
-
-### Database API Endpoints
-
-#### GET /api/database
-- **ç”¨é€”**: è·å–æ‰€æœ‰ç”¨æˆ·æ•°æ®
-- **è¿”å›**: ç”¨æˆ·æ•°æ®æ•°ç»„
-- **ç¤ºä¾‹å“åº”**:
+**ÏìÓ¦Ê¾Àı**:
 ```json
 {
   "data": [
-    {"id": 1, "name": "John", "email": "john@example.com", "age": 25}
+    {
+      "id": 1,
+      "name": "ÕÅÈı",
+      "email": "zhangsan@example.com",
+      "age": 25,
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "updated_at": "2024-01-01T00:00:00.000Z"
+    }
   ]
 }
 ```
 
-#### POST /api/database
-- **ç”¨é€”**: åˆ›å»ºæ–°ç”¨æˆ·
-- **è¯·æ±‚ä½“**:
-```json
+#### ´´½¨ÓÃ»§
+```http
+POST /api/database
+Content-Type: application/json
+
 {
-  "name": "John Doe",
-  "email": "john@example.com", 
+  "name": "ĞÂÓÃ»§",
+  "email": "newuser@example.com",
   "age": 25
 }
 ```
-- **è¿”å›**: åˆ›å»ºæˆåŠŸä¿¡æ¯å’Œæ’å…¥ID
 
-#### PUT /api/database
-- **ç”¨é€”**: æ›´æ–°ç”¨æˆ·ä¿¡æ¯
-- **è¯·æ±‚ä½“**:
+**ÏìÓ¦Ê¾Àı**:
 ```json
 {
+  "success": true,
+  "message": "ÓÃ»§´´½¨³É¹¦",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "data": {
+    "insertId": 2,
+    "affectedRows": 1,
+    "user": {
+      "name": "ĞÂÓÃ»§",
+      "email": "newuser@example.com",
+      "age": 25
+    }
+  }
+}
+```
+
+#### ¸üĞÂÓÃ»§
+```http
+PUT /api/database
+Content-Type: application/json
+
+{
   "id": 1,
-  "name": "John Updated",
-  "email": "john.updated@example.com",
+  "name": "¸üĞÂºóµÄĞÕÃû",
+  "email": "updated@example.com",
   "age": 26
 }
 ```
-- **è¿”å›**: æ›´æ–°æˆåŠŸä¿¡æ¯å’Œå½±å“è¡Œæ•°
 
-#### DELETE /api/database?id=1
-- **ç”¨é€”**: åˆ é™¤æŒ‡å®šç”¨æˆ·
-- **å‚æ•°**: `id` - ç”¨æˆ·ID
-- **è¿”å›**: åˆ é™¤æˆåŠŸä¿¡æ¯å’Œå½±å“è¡Œæ•°
-
-### æ•°æ®åº“æ“ä½œæœ€ä½³å®è·µ
-
-1. **è¿æ¥ç®¡ç†**: ä½¿ç”¨è¿æ¥æ± è‡ªåŠ¨ç®¡ç†æ•°æ®åº“è¿æ¥ï¼Œé¿å…è¿æ¥æ³„æ¼
-2. **é”™è¯¯å¤„ç†**: æ‰€æœ‰æ•°æ®åº“æ“ä½œéƒ½åŒ…å«å®Œæ•´çš„é”™è¯¯å¤„ç†å’Œæ—¥å¿—è®°å½•
-3. **å‚æ•°åŒ–æŸ¥è¯¢**: ä½¿ç”¨å‚æ•°åŒ–æŸ¥è¯¢é˜²æ­¢SQLæ³¨å…¥æ”»å‡»
-4. **èµ„æºé‡Šæ”¾**: è‡ªåŠ¨ç¡®ä¿æ•°æ®åº“è¿æ¥è¢«æ­£ç¡®é‡Šæ”¾å›è¿æ¥æ± 
-5. **äº‹åŠ¡æ”¯æŒ**: å¯ä»¥æ‰©å±•æ”¯æŒæ•°æ®åº“äº‹åŠ¡æ“ä½œ
-
-## API: JWT Login
-
-Endpoints implemented under App Router:
-
-- `POST /api/login` Â¡Âª issue a JWT token
-- `GET /api/login` Â¡Âª verify a JWT token
-
-### Environment
-
-- Create `.env.local` in the project root and set a secret (recommended):
-
-```
-NEXT_PUBLIC_ACCESS_TOKEN_SECRET=your-strong-secret
+#### É¾³ıÓÃ»§
+```http
+DELETE /api/database?id=1
 ```
 
-If not provided, a development fallback secret is used (`dev-secret`). Do not use fallback in production.
+### Êı¾İ¿âÁ¬½Ó²âÊÔ½Ó¿Ú
 
-### POST /api/login
-
-- Request (JSON):
-
+#### ²âÊÔÁ¬½Ó×´Ì¬
+```http
+GET /api/database/test
 ```
+
+**ÏìÓ¦Ê¾Àı**:
+```json
 {
-  "id": 123,
-  "username": "john",
-  "expiresIn": "1d" // optional, e.g. "1h", "7d"
+  "success": true,
+  "message": "Êı¾İ¿âÁ¬½Ó³É¹¦",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "data": {
+    "connection": "success",
+    "poolStatus": {
+      "threadId": 123,
+      "connectionLimit": 10,
+      "waitForConnections": true,
+      "queueLimit": 0
+    }
+  }
 }
 ```
 
-- Response (JSON):
+## ? ¹ÊÕÏÅÅ³ı
+
+### ³£¼û´íÎó¼°½â¾ö·½°¸
+
+#### 1. ECONNREFUSED ´íÎó
+**´íÎóĞÅÏ¢**: `Êı¾İ¿âÁ¬½Ó±»¾Ü¾ø`
+**Ô­Òò**: Êı¾İ¿â·şÎñÎ´Æô¶¯»òÁ¬½ÓÅäÖÃ´íÎó
+**½â¾ö·½°¸**:
+- È·±£ MySQL ·şÎñÕıÔÚÔËĞĞ
+- ¼ì²éÊı¾İ¿âÖ÷»úµØÖ·ºÍ¶Ë¿Ú
+- ÑéÖ¤·À»ğÇ½ÉèÖÃ
+
+#### 2. ER_ACCESS_DENIED_ERROR ´íÎó
+**´íÎóĞÅÏ¢**: `Êı¾İ¿â·ÃÎÊ±»¾Ü¾ø`
+**Ô­Òò**: ÓÃ»§Ãû»òÃÜÂë´íÎó
+**½â¾ö·½°¸**:
+- ¼ì²é `.env.local` ÖĞµÄÊı¾İ¿âÆ¾¾İ
+- È·ÈÏÓÃ»§ÓĞ·ÃÎÊÊı¾İ¿âµÄÈ¨ÏŞ
+- ÑéÖ¤Êı¾İ¿âÓÃ»§ÊÇ·ñ´æÔÚ
+
+#### 3. ER_BAD_DB_ERROR ´íÎó
+**´íÎóĞÅÏ¢**: `Êı¾İ¿â²»´æÔÚ`
+**Ô­Òò**: Ö¸¶¨µÄÊı¾İ¿âÃû³Æ²»´æÔÚ
+**½â¾ö·½°¸**:
+- ´´½¨Ö¸¶¨µÄÊı¾İ¿â
+- ¼ì²éÊı¾İ¿âÃû³ÆÆ´Ğ´
+- È·ÈÏÓÃ»§ÓĞ´´½¨Êı¾İ¿âµÄÈ¨ÏŞ
+
+#### 4. ¹¹½¨Ê±Ô¤äÖÈ¾´íÎó
+**´íÎóĞÅÏ¢**: `Error occurred prerendering page`
+**Ô­Òò**: Ò³ÃæÔÚ¹¹½¨Ê±ÎŞ·¨·ÃÎÊÊı¾İ¿â
+**½â¾ö·½°¸**:
+- ½«Ò³Ãæ×é¼ş¸ÄÎª¿Í»§¶Ë×é¼ş£¨Ê¹ÓÃ `"use client"`£©
+- ÔÚ `useEffect` ÖĞ»ñÈ¡Êı¾İ
+- Ìí¼ÓÊÊµ±µÄ¼ÓÔØ×´Ì¬ºÍ´íÎó´¦Àí
+
+#### 5. MySQL2 ÅäÖÃ¾¯¸æ
+**¾¯¸æĞÅÏ¢**: `Ignoring invalid configuration option`
+**Ô­Òò**: Ê¹ÓÃÁË MySQL2 ²»Ö§³ÖµÄÅäÖÃÑ¡Ïî
+**½â¾ö·½°¸**:
+- ÒÑĞŞ¸´ÅäÖÃÎÄ¼ş£¬ÒÆ³ıÁËÎŞĞ§Ñ¡Ïî
+- Ê¹ÓÃ `test-db.js` ½Å±¾²âÊÔÁ¬½Ó
+- ¼ì²é MySQL °æ±¾¼æÈİĞÔ
+- ²Î¿¼ `DATABASE-CONFIG.md` ÁË½âÖ§³ÖµÄÅäÖÃÑ¡Ïî
+
+#### 6. ÅäÖÃÑ¡Ïî²»¼æÈİ
+**ÎÊÌâ**: Ä³Ğ©ÅäÖÃÑ¡ÏîÔÚ MySQL2 ÖĞ²»±»Ö§³Ö
+**½â¾ö·½°¸**:
+- Ö»Ê¹ÓÃ MySQL2 Ö§³ÖµÄÅäÖÃÑ¡Ïî
+- ²Î¿¼ `DATABASE-CONFIG.md` ÎÄµµ
+- ÒÆ³ı `acquireTimeout`, `timeout`, `reconnect` µÈÎŞĞ§Ñ¡Ïî
+
+### µ÷ÊÔ²½Öè
+
+1. **¼ì²éÊı¾İ¿âÁ¬½Ó**:
+   ```bash
+   # Ê¹ÓÃ²âÊÔ½Å±¾
+   node test-db.js
+   
+   # »òÊ¹ÓÃ API ¶Ëµã
+   curl http://localhost:3000/api/database/test
+   ```
+
+2. **²é¿´Ó¦ÓÃÈÕÖ¾**:
+   ```bash
+   npm run dev
+   # ¹Û²ì¿ØÖÆÌ¨Êä³öµÄ´íÎóĞÅÏ¢
+   ```
+
+3. **ÑéÖ¤»·¾³±äÁ¿**:
+   - È·±£ `.env.local` ÎÄ¼ş´æÔÚ
+   - ¼ì²é±äÁ¿ÖµÊÇ·ñÕıÈ·
+   - ÖØÆô¿ª·¢·şÎñÆ÷
+
+4. **²âÊÔÊı¾İ¿âÁ¬½Ó**:
+   ```bash
+   mysql -h 127.0.0.1 -u root -p
+   # ÊäÈëÃÜÂëºó²âÊÔÁ¬½Ó
+   ```
+
+5. **¼ì²é MySQL ·şÎñ×´Ì¬**:
+   ```bash
+   # Windows
+   net start | findstr MySQL
+   
+   # Linux/Mac
+   sudo systemctl status mysql
+   ```
+
+### ¿ìËÙÕï¶Ï¹¤¾ß
+
+ÏîÄ¿Ìá¹©ÁË¶à¸öÕï¶Ï¹¤¾ß£º
+
+- **`test-db.js`**: ¶ÀÁ¢µÄÊı¾İ¿âÁ¬½Ó²âÊÔ½Å±¾
+- **`/api/database/test`**: API ¶Ëµã²âÊÔÊı¾İ¿âÁ¬½Ó
+- **`database-init.sql`**: Êı¾İ¿â³õÊ¼»¯½Å±¾
+- **`start-dev.bat`**: Windows ¿ìËÙÆô¶¯½Å±¾
+- **`DATABASE-CONFIG.md`**: MySQL2 ÅäÖÃÑ¡ÏîËµÃ÷ÎÄµµ
+
+## ? ÏîÄ¿½á¹¹
 
 ```
-{
-  "token": "<JWT>"
-}
+my-app/
+©À©¤©¤ src/
+©¦   ©À©¤©¤ app/
+©¦   ©¦   ©À©¤©¤ api/
+©¦   ©¦   ©¦   ©¸©¤©¤ database/
+©¦   ©¦   ©¦       ©À©¤©¤ config.js          # Êı¾İ¿âÅäÖÃ
+©¦   ©¦   ©¦       ©À©¤©¤ database.js        # Êı¾İ¿â²Ù×÷º¯Êı
+©¦   ©¦   ©¦       ©À©¤©¤ route.js           # ÓÃ»§¹ÜÀíAPI
+©¦   ©¦   ©¦       ©¸©¤©¤ test/
+©¦   ©¦   ©¦           ©¸©¤©¤ route.js       # Á¬½Ó²âÊÔAPI
+©¦   ©¦   ©À©¤©¤ globals.css                # È«¾ÖÑùÊ½
+©¦   ©¦   ©À©¤©¤ layout.js                  # Ó¦ÓÃ²¼¾Ö
+©¦   ©¦   ©¸©¤©¤ page.js                    # Ö÷Ò³Ãæ
+©¦   ©¸©¤©¤ ...
+©À©¤©¤ public/                             # ¾²Ì¬×ÊÔ´
+©À©¤©¤ database-init.sql                   # Êı¾İ¿â³õÊ¼»¯½Å±¾
+©À©¤©¤ test-db.js                         # Êı¾İ¿âÁ¬½Ó²âÊÔ½Å±¾
+©À©¤©¤ start-dev.bat                      # Windows ¿ìËÙÆô¶¯½Å±¾
+©À©¤©¤ config-example.txt                 # »·¾³±äÁ¿ÅäÖÃÊ¾Àı
+©À©¤©¤ DATABASE-CONFIG.md                 # MySQL2 ÅäÖÃËµÃ÷ÎÄµµ
+©À©¤©¤ package.json                        # ÏîÄ¿ÒÀÀµ
+©¸©¤©¤ README.md                          # ÏîÄ¿ÎÄµµ
 ```
 
-### GET /api/login
+## ? ²¿Êğ
 
-Verifies the JWT from the Authorization header.
+### Éú²ú»·¾³ÅäÖÃ
+1. ÉèÖÃÉú²ú»·¾³Êı¾İ¿âÁ¬½Ó
+2. ÅäÖÃ»·¾³±äÁ¿
+3. ¹¹½¨Ó¦ÓÃ: `npm run build`
+4. Æô¶¯Éú²ú·şÎñÆ÷: `npm start`
 
-- Headers:
-  - `Authorization: Bearer <JWT>`
+### »·¾³±äÁ¿
+- `DB_HOST`: Êı¾İ¿âÖ÷»úµØÖ·
+- `DB_USER`: Êı¾İ¿âÓÃ»§Ãû
+- `DB_PASSWORD`: Êı¾İ¿âÃÜÂë
+- `DB_NAME`: Êı¾İ¿âÃû³Æ
+- `DB_PORT`: Êı¾İ¿â¶Ë¿Ú
 
-- Successful Response (JSON):
+## ? ¹±Ï×
 
-```
-{
-  "valid": true,
-  "payload": { /* decoded claims */ }
-}
-```
+»¶Ó­Ìá½» Issue ºÍ Pull Request£¡
 
-- Failure Response (JSON):
+## ? Ğí¿ÉÖ¤
 
-```
-{
-  "valid": false,
-  "message": "Token not provided" | "jwt expired" | ...
-}
-```
+MIT License
 
-### Quick test with cURL
+## ? Ö§³Ö
 
-```
-# 1) Issue token
-curl -s -X POST http://localhost:3000/api/login \
-  -H "Content-Type: application/json" \
-  -d '{"id":1,"username":"john"}'
+Èç¹ûÓöµ½ÎÊÌâ£¬Çë£º
+1. ²é¿´±¾ÎÄµµµÄ¹ÊÕÏÅÅ³ı²¿·Ö
+2. ÔËĞĞ `node test-db.js` ²âÊÔÊı¾İ¿âÁ¬½Ó
+3. ¼ì²é GitHub Issues
+4. ´´½¨ĞÂµÄ Issue ÃèÊöÎÊÌâ
 
-# 2) Verify token (replace <JWT>)
-curl -s -X GET http://localhost:3000/api/login \
-  -H "Authorization: Bearer <JWT>"
-```
+---
 
-## é¡¹ç›®æ›´æ–°è®°å½•
-
-### 2024å¹´12æœˆæ•°æ®åº“é‡æ„
-
-#### ä¸»è¦æ”¹è¿›
-1. **ä»£ç åˆ†ç¦»**: å°†MySQLè¿æ¥å’Œæ•°æ®åº“æ“ä½œé€»è¾‘ä»`route.js`æå–åˆ°`database.js`
-2. **å‡½æ•°åŒ–è®¾è®¡**: åˆ›å»ºäº†å¯å¤ç”¨çš„æ•°æ®åº“æ“ä½œå‡½æ•°ï¼ˆexecuteQuery, executeUpdateï¼‰
-3. **è¿æ¥æ± ç®¡ç†**: ç»Ÿä¸€çš„è¿æ¥æ± é…ç½®å’Œè¿æ¥ç®¡ç†
-4. **é”™è¯¯å¤„ç†**: å®Œå–„çš„é”™è¯¯å¤„ç†å’Œèµ„æºé‡Šæ”¾æœºåˆ¶
-5. **APIæ‰©å±•**: æ–°å¢äº†å®Œæ•´çš„CRUDæ“ä½œï¼ˆåˆ›å»ºã€è¯»å–ã€æ›´æ–°ã€åˆ é™¤ï¼‰
-
-#### æŠ€æœ¯ç‰¹ç‚¹
-1. **æ¨¡å—åŒ–è®¾è®¡**: æ•°æ®åº“æ“ä½œé€»è¾‘ç‹¬ç«‹ï¼Œä¾¿äºç»´æŠ¤å’Œæµ‹è¯•
-2. **è¿æ¥å®‰å…¨**: è‡ªåŠ¨è¿æ¥ç®¡ç†ï¼Œé˜²æ­¢è¿æ¥æ³„æ¼
-3. **å‚æ•°åŒ–æŸ¥è¯¢**: é˜²æ­¢SQLæ³¨å…¥æ”»å‡»
-4. **ç»Ÿä¸€æ¥å£**: æ‰€æœ‰æ•°æ®åº“æ“ä½œä½¿ç”¨ç»Ÿä¸€çš„å‡½æ•°æ¥å£
-5. **æ‰©å±•æ€§**: æ˜“äºæ·»åŠ æ–°çš„æ•°æ®åº“æ“ä½œåŠŸèƒ½
-
-#### æ¶æ„ä¼˜åŠ¿
-- éµå¾ªSOLIDåŸåˆ™ï¼Œå•ä¸€èŒè´£å’Œå¼€é—­åŸåˆ™
-- ä½¿ç”¨è®¾è®¡æ¨¡å¼ï¼ˆå·¥å‚æ¨¡å¼ï¼‰ç®¡ç†æ•°æ®åº“è¿æ¥
-- ä»£ç å¤ç”¨æ€§é«˜ï¼Œå‡å°‘é‡å¤ä»£ç 
-- ä¾¿äºå•å…ƒæµ‹è¯•å’Œé›†æˆæµ‹è¯•
-
-#### æœªæ¥æ”¹è¿›æ–¹å‘
-1. æ·»åŠ æ•°æ®åº“äº‹åŠ¡æ”¯æŒ
-2. å®ç°æ•°æ®åº“è¿æ¥æ± ç›‘æ§
-3. æ”¯æŒå¤šç§æ•°æ®åº“ç±»å‹
-4. æ·»åŠ æ•°æ®åº“è¿ç§»åŠŸèƒ½
-5. å®ç°æ•°æ®åº“æŸ¥è¯¢æ€§èƒ½ä¼˜åŒ–
-
-### 2024å¹´æ—©æœŸç‰ˆæœ¬
-
-#### ä¸»è¦é—®é¢˜
-1. **APIå“åº”å¤„ç†**ï¼šå‰ç«¯ä½¿ç”¨axiosæˆ–fetch APIæ—¶ï¼Œéœ€è¦è°ƒç”¨`response.json()`æ¥è§£ææ•°æ®
-2. **é”™è¯¯å¤„ç†æœºåˆ¶**ï¼šç¼ºå°‘ç»Ÿä¸€çš„é”™è¯¯å¤„ç†å’Œç”¨æˆ·æç¤ºæœºåˆ¶
-3. **çŠ¶æ€ç®¡ç†**ï¼šå‰ç«¯çŠ¶æ€ç®¡ç†ä¸å¤Ÿå®Œå–„ï¼Œå¯èƒ½å¯¼è‡´æ•°æ®ä¸ä¸€è‡´
-4. **æ€§èƒ½ä¼˜åŒ–**ï¼šç¼ºå°‘å¿…è¦çš„æ€§èƒ½ä¼˜åŒ–æªæ–½
-
-#### æ”¹è¿›è®¡åˆ’
-1. **ç»Ÿä¸€APIæ¥å£**ï¼šå»ºè®®ä½¿ç”¨fetch APIæˆ–axiosï¼Œå¹¶ç»Ÿä¸€é”™è¯¯å¤„ç†
-2. **é”™è¯¯å¤„ç†ä¼˜åŒ–**ï¼šå®Œå–„try-catchæœºåˆ¶ï¼Œæä¾›ç”¨æˆ·å‹å¥½çš„é”™è¯¯æç¤º
-3. **çŠ¶æ€ç®¡ç†ä¼˜åŒ–**ï¼šå®ç°æ›´å®Œå–„çš„å‰ç«¯çŠ¶æ€ç®¡ç†ï¼Œç¡®ä¿æ•°æ®ä¸€è‡´æ€§
-4. **æ€§èƒ½ä¼˜åŒ–**ï¼šæ·»åŠ å¿…è¦çš„æ€§èƒ½ä¼˜åŒ–æªæ–½ï¼Œæå‡ç”¨æˆ·ä½“éªŒ
-5. **ä»£ç è´¨é‡**ï¼šæé«˜ä»£ç å¯è¯»æ€§å’Œå¯ç»´æŠ¤æ€§
-
-#### æŠ€æœ¯æ ˆ
-- åŸºäºNext.js 15ï¼Œæ”¯æŒasync/awaitè¯­æ³•
-- ä½¿ç”¨App Routeræ¶æ„
-- æ”¯æŒæœåŠ¡å™¨ç«¯æ¸²æŸ“
-- é›†æˆTailwind CSSæ ·å¼æ¡†æ¶
-
-#### å¾…è§£å†³é—®é¢˜
-1. æ•°æ®åº“è¿æ¥ç®¡ç†ä¼˜åŒ–
-2. ç”¨æˆ·è®¤è¯æµç¨‹å®Œå–„
-3. æ•°æ®éªŒè¯æœºåˆ¶
-4. å‰ç«¯React Suspenseé›†æˆ
-5. ç§»åŠ¨ç«¯å“åº”å¼è®¾è®¡ä¼˜åŒ–
+**×¢Òâ**: ÕâÊÇÒ»¸ö¿ª·¢ÖĞµÄÏîÄ¿£¬ÇëÔÚÉú²ú»·¾³Ê¹ÓÃÇ°½øĞĞ³ä·Ö²âÊÔ¡£

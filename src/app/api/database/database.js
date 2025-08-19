@@ -1,12 +1,11 @@
 const mysql = require("mysql2/promise");
+const dbConfig = require("./config");
 
 // 创建全局的 MySQL 连接池
 const pool = mysql.createPool({
-  connectionLimit: 10,
-  host: "127.0.0.1", // 服务器地址
-  user: "root",
-  password: "Zyzyld99.", // 密码
-  database: "test_db",
+  ...dbConfig,
+  // 移除无效的配置选项
+  // 使用MySQL2支持的配置
 });
 
 /**
@@ -27,7 +26,17 @@ async function executeQuery(sql, params = []) {
     return rows;
   } catch (error) {
     console.error("数据库查询错误:", error);
-    throw error;
+    
+    // 根据错误类型提供更详细的错误信息
+    if (error.code === 'ECONNREFUSED') {
+      throw new Error(`数据库连接被拒绝: ${error.message}. 请检查数据库服务是否正在运行，以及连接配置是否正确。`);
+    } else if (error.code === 'ER_ACCESS_DENIED_ERROR') {
+      throw new Error(`数据库访问被拒绝: ${error.message}. 请检查用户名和密码是否正确。`);
+    } else if (error.code === 'ER_BAD_DB_ERROR') {
+      throw new Error(`数据库不存在: ${error.message}. 请检查数据库名称是否正确。`);
+    } else {
+      throw new Error(`数据库查询失败: ${error.message}`);
+    }
   } finally {
     // 确保连接被释放回连接池
     if (connection) {
@@ -54,12 +63,38 @@ async function executeUpdate(sql, params = []) {
     return result;
   } catch (error) {
     console.error("数据库更新错误:", error);
-    throw error;
+    
+    // 根据错误类型提供更详细的错误信息
+    if (error.code === 'ECONNREFUSED') {
+      throw new Error(`数据库连接被拒绝: ${error.message}. 请检查数据库服务是否正在运行，以及连接配置是否正确。`);
+    } else if (error.code === 'ER_ACCESS_DENIED_ERROR') {
+      throw new Error(`数据库访问被拒绝: ${error.message}. 请检查用户名和密码是否正确。`);
+    } else if (error.code === 'ER_BAD_DB_ERROR') {
+      throw new Error(`数据库不存在: ${error.message}. 请检查数据库名称是否正确。`);
+    } else {
+      throw new Error(`数据库更新失败: ${error.message}`);
+    }
   } finally {
     // 确保连接被释放回连接池
     if (connection) {
       connection.release();
     }
+  }
+}
+
+/**
+ * 测试数据库连接
+ * @returns {Promise<boolean>} 连接是否成功
+ */
+async function testConnection() {
+  try {
+    const connection = await pool.getConnection();
+    await connection.ping();
+    connection.release();
+    return true;
+  } catch (error) {
+    console.error("数据库连接测试失败:", error);
+    return false;
   }
 }
 
@@ -71,8 +106,9 @@ function getPoolStatus() {
   return {
     threadId: pool.threadId,
     connectionLimit: pool.config.connectionLimit,
-    acquireTimeout: pool.config.acquireTimeout,
-    timeout: pool.config.timeout
+    // 只返回存在的配置选项
+    waitForConnections: pool.config.waitForConnections,
+    queueLimit: pool.config.queueLimit
   };
 }
 
@@ -92,6 +128,7 @@ async function closePool() {
 module.exports = {
   executeQuery,
   executeUpdate,
+  testConnection,
   getPoolStatus,
   closePool,
   pool
